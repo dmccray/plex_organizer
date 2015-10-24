@@ -1,7 +1,6 @@
 defmodule PlexOrganizer do
 	def main(args) do
 		IO.puts("It has begun")
-
 		args |> parse_args |> process
 	end
 
