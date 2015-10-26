@@ -18,8 +18,8 @@ defmodule PlexOrganizer do
 		#files = File.ls!(Path.absname(src_directory, dest_directory))
 		#Enum.each(files, &(PlexNameTransform.match_series(&1)))
 
-		File.ls!(Path.absname(dest_directory) <> "/TV Shows")
-		|> 	Stream.filter(&(not String.starts_with?(&1, ".")))
+		File.ls!(Path.absname(dest_directory) <> "/TV Shows") 
+		|> 	Stream.filter(&(not String.starts_with?(&1, ".")))  #filter out hidden files
 		|> 	Enum.each(&(PlexNameTransform.match_content(:series, src_directory, dest_directory, &1)))
 
 	end
