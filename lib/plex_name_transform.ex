@@ -8,46 +8,37 @@ defmodule PlexNameTransform do
 						|> Regex.compile							#create regular expression from string
 						|> elem(1)									#get the regex from the tuple
 
-		file = File.ls!(Path.absname(src_directory))
-		
-		{season, episode, seas_epi_tag} = get_season_episode(:series, file)
-
-		Enum.each(file, &(IO.puts("#{&1}: #{show} - #{String.match?(String.upcase(&1), show_regex)}")))
-
-
-
-		#case if match
-			#get and translate season
-			#find destination folder for show & season
-			#is file or folder
-			#cd inside folder if folder
-			#copy file
-		#else
-			#write to log no destination folder
-
-		#need to deal with season number as well
-		#need to call a new function to check if file or directory, if regex matched, get file (either from directory or file itself), and copy to destination folder
-		#if folder doesn't exist write to error log file (have to create structure in order for program to work)
+		file_list = File.ls!(Path.absname(src_directory))
+		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory)))
 	end
 
 	def match_content(:movie, src_directory, dest_directory, show) do
 		#tab to start automating movies
 	end
 
+	defp match_show(file, show, regex, src, dest) do
+		if String.match?(String.upcase(file),regex) do
+			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
+			show_folder = find_destination(:series, dest, show, season)
+
+			IO.puts(show_folder)
+
+			#check if dest file/show already exists
+			#check source is file. if directory find file; i.e. fn that returns the file given the source
+			#copy file
+			#verify copied file
+			#move source to recycle bin
+
+		end
+
+	end
+	
 	defp series?(src_path) do
 		Regex.run(~r/S\d\dE\d\d/, src_path) != nil
 	end
 
-	defp match_show(file, show) do
-
-	end
-
 	defp movie?(src_path) do
 		Regex.run(~r/\(\d\d\d\d\)/, src_path) != nil
-	end
-
-	defp find_destination(:series, src_path, dest_path) do
-		
 	end
 
 	defp get_season_episode(:series, file) do
@@ -56,6 +47,15 @@ defmodule PlexNameTransform do
 		[car | [caar| cdr]] = tl
 
 		{"Season #{String.lstrip(car,?0)}","Episode #{String.lstrip(caar,?0)}", se_tag}
+	end
+
+	defp find_destination(:series, plex_media_path, show, season) do
+		path = Path.absname(plex_media_path<>"/TV Shows")
+		folders = File.ls!(path)
+		[show_folder | tl] = Enum.filter(folders,&(String.upcase(&1) == String.upcase(show)))
+		show_folder = Path.join(path, show_folder)
+
+		if File.dir?(show_folder), do: show_folder, else: nil
 	end
 
 	defp exists?(:series, show, season) do
