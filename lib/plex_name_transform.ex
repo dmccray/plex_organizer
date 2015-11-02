@@ -21,10 +21,11 @@ defmodule PlexNameTransform do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
 
-			IO.puts(show_folder)
+						
+
+			IO.puts(file_or_folder(src, file)) 				#file_or_folder returns the file to be copied
 
 			#check if dest file/show already exists
-			#check source is file. if directory find file; i.e. fn that returns the file given the source
 			#copy file
 			#verify copied file
 			#move source to recycle bin
@@ -56,6 +57,26 @@ defmodule PlexNameTransform do
 		show_folder = Path.join(path, show_folder)
 
 		if File.dir?(show_folder), do: show_folder, else: nil
+	end
+
+	#returns file to copy
+	defp file_or_folder(path, file) do
+		if (File.dir?(path <> "/" <> file)) do
+			potential_files =  File.ls!(Path.absname(path <> "/" <> file))
+			file_to_copy = List.foldl(potential_files, {"", 0}, 															#tuple of file and largest size as accumulator for fold fn
+								fn(pf, largest_so_far_t) -> 																#anonymous function to find largest file recursively
+									fstat = File.stat!(Path.absname(path <> "/" <> file <> "/" <> pf))
+									if(fstat.size > elem(largest_so_far_t,1)) do 
+										{pf, fstat.size}
+									else
+										largest_so_far_t
+									end
+								end
+							) 
+			elem(file_to_copy, 0)
+		else
+			file
+		end
 	end
 
 	defp exists?(:series, show, season) do
