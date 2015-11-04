@@ -89,9 +89,8 @@ defmodule PlexNameTransform do
 	end
 
 	defp define_regex(str) do
-		String.upcase(str)
+		String.upcase(str)											#make string uppercase to match uppercase filename
 			|> String.replace(~r/\(\d\d\d\d\)/, "(\\d\\d\\d\\d)?")	#remove year
-			|> String.upcase										#make string uppercase to match uppercase filename
 			|> String.strip											#strip whitespace
 			|> String.replace(" ", "(\\s|\\S)*")   					#add regular expressions
 			|> add_parens											#add parenthesis around regular expression
@@ -104,4 +103,5 @@ defmodule PlexNameTransform do
 	end
 
 end
+
 
