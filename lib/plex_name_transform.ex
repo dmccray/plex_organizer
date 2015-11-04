@@ -1,13 +1,6 @@
 defmodule PlexNameTransform do
 	def match_content(:series, src_directory, dest_directory, show) do
-		show_regex = String.replace(show, ~r/\(\d\d\d\d\)/, "")		#remove year
-						|> String.strip								#strip whitespace
-						|> String.replace(" ", "(\\s|\\S)")   		#add regular expressions
-						|> add_parens								#add parenthesis around regular expression
-						|> String.upcase							#make string uppercase to match uppercase filename
-						|> Regex.compile							#create regular expression from string
-						|> elem(1)									#get the regex from the tuple
-
+		show_regex = define_regex(show)
 		file_list = File.ls!(Path.absname(src_directory))
 		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory)))
 	end
@@ -21,15 +14,17 @@ defmodule PlexNameTransform do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
 
-						
+			IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")}")
 
-			IO.puts(file_or_folder(src, file)) 				#file_or_folder returns the file to be copied
+			#exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")	#exists returns :true or :false that destination already exists
+			#IO.puts(file_or_folder(src, file)) 				#file_or_folder returns the file to be copied
 
-			#check if dest file/show already exists
-			#copy file
-			#verify copied file
-			#move source to recycle bin
-
+			#if exists 
+				#move source to recycle bin
+			#else 
+				#copy source to destination
+				#verify copy
+				#move source to recycle bin
 		end
 
 	end
@@ -79,7 +74,29 @@ defmodule PlexNameTransform do
 		end
 	end
 
-	defp exists?(:series, show, season) do
+	#tests that the file doesn't already exist in location
+	defp exists?(:series, path, episode) do
+		episode_regex = define_regex(episode)										
+		file_exists = List.foldl(File.ls!(Path.absname(path)), :false,
+							fn(chk_file, found) ->
+								if (String.match?(String.upcase(chk_file), episode_regex)) do
+									:true
+								else
+									found
+								end
+							end
+						)
+	end
+
+	defp define_regex(str) do
+		String.upcase(str)
+			|> String.replace(~r/\(\d\d\d\d\)/, "(\\d\\d\\d\\d)?")	#remove year
+			|> String.upcase										#make string uppercase to match uppercase filename
+			|> String.strip											#strip whitespace
+			|> String.replace(" ", "(\\s|\\S)*")   					#add regular expressions
+			|> add_parens											#add parenthesis around regular expression
+			|> Regex.compile										#create regular expression from string
+			|> elem(1)												#get the regex from the tuple
 	end
 
 	defp add_parens(str) do
@@ -87,7 +104,4 @@ defmodule PlexNameTransform do
 	end
 
 end
-
-
-
 
