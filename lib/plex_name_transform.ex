@@ -14,17 +14,24 @@ defmodule PlexNameTransform do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
 
-			IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")}")
+			#IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")}")
+			#file_or_folder returns the file to be copied
 
-			#exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")	#exists returns :true or :false that destination already exists
-			#IO.puts(file_or_folder(src, file)) 				#file_or_folder returns the file to be copied
-
-			#if exists 
-				#move source to recycle bin
-			#else 
+			#to help learn about process I should implement a "master" process that will spawn processes for each file to copy
+			#each spawned copy process will pass a message back to the "master" process once it has completed successfully
+			#the "master" process will then spawn a process to clean or mv the orginal file to the Recycle bin
+			#get some practice with concurrency
+			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
+				IO.puts("#{show} - #{seas_epi_tag} exists. Moving #{src}/#{file} to trash.") #log move to Trash
+				#recycle(src, file)	#move source to recycle bin
+			else 
 				#copy source to destination
+				IO.puts("Copying #{src}/#{file_or_folder(src, file)} to #{show_folder}/#{season}/#{show} - #{seas_epi_tag}") 				#log copy to destination
 				#verify copy
+				IO.puts("Copy of #{show_folder}/#{season}/#{show} - #{seas_epi_tag} Verified.")												#log verification of copy
 				#move source to recycle bin
+				IO.puts("#{show} - #{seas_epi_tag} copied. Moving #{src}/#{file} to trash.") 												#log move to Trash#log move to trash
+			end
 		end
 
 	end
@@ -98,10 +105,21 @@ defmodule PlexNameTransform do
 			|> elem(1)												#get the regex from the tuple
 	end
 
+	defp recycle(src_path, src_file_or_folder) do 
+		trash_file = "/Users/dmccray/.Trash/#{src_file_or_folder}"
+		File.rename(Path.absname(src_path <> "/" <> src_file_or_folder), Path.absname(trash_file))
+	end
+
+	defp copy_file(src_path, src_file) do
+	end
+
+	#return true or false after copy
+	defp verify_copy(src_path, src_file) do 
+	end
+
 	defp add_parens(str) do
 		"(" <> str <> ")"
 	end
-
 end
 
 
