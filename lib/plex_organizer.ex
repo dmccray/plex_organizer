@@ -61,6 +61,7 @@ defmodule PlexOrganizer do
 				#IO.puts("Copying #{src}/#{file_or_folder(src, file)} to #{show_folder}/#{season}/#{show} - #{seas_epi_tag}") 				#log copy to destination
 				#verify copy
 				{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
+				:timer.sleep(3000)
 				GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file
 				
 				#IO.puts("Copy of #{show_folder}/#{season}/#{show} - #{seas_epi_tag} Verified.")												#log verification of copy
