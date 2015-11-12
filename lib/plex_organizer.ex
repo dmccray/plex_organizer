@@ -58,9 +58,12 @@ defmodule PlexOrganizer do
 				#recycle(src, file)	#move source to recycle bin
 			else
 				#copy source to destination
-				IO.puts("Copying #{src}/#{file_or_folder(src, file)} to #{show_folder}/#{season}/#{show} - #{seas_epi_tag}") 				#log copy to destination
+				#IO.puts("Copying #{src}/#{file_or_folder(src, file)} to #{show_folder}/#{season}/#{show} - #{seas_epi_tag}") 				#log copy to destination
 				#verify copy
-				IO.puts("Copy of #{show_folder}/#{season}/#{show} - #{seas_epi_tag} Verified.")												#log verification of copy
+				{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
+				GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file
+				
+				#IO.puts("Copy of #{show_folder}/#{season}/#{show} - #{seas_epi_tag} Verified.")												#log verification of copy
 				#move source to recycle bin
 				IO.puts("#{show} - #{seas_epi_tag} copied. Moving #{src}/#{file} to trash.") 												#log move to Trash#log move to trash
 			end
