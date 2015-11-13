@@ -62,16 +62,19 @@ defmodule PlexOrganizer do
 			else
 				##{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
 				#GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file	
-			
+
+				#encoding file name to register process
+				file_register_name = :crypto.hash(:md5, file) |> Base.encode16
+				
 			  #send message to manager to create a child process for a single file
-			  send(:FileManager, {:create, {self(), file}})
+			  send(:FileManager, {:create, {self(), file_register_name}})
 
 			  :timer.sleep(1000)
 				
 			  #send message to manager to process file
 			  send(:FileManager, {:process,
 				  								 {self(),
-					  								file,
+					  								file_register_name,
 						  							"#{src}/#{file}",
 							  						"#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}",
 								  					"/Users/dmccray/.Trash"
