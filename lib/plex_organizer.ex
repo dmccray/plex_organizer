@@ -1,5 +1,8 @@
 defmodule PlexOrganizer do
 	def main(args) do
+		#spawn and register parent process for managing files to copy
+		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
+				
 		args |> parse_args |> process
 	end
 
@@ -35,12 +38,6 @@ defmodule PlexOrganizer do
 	defp match_content(:series, src_directory, dest_directory, show) do
 		show_regex = define_regex(show)
 		file_list = File.ls!(Path.absname(src_directory))
-
-		if(file_list != []) do
-			#spawn and register parent process for managing files to copy
-			Process.register(spawn(FileManager, :manage, [0]), :FileManager)
-		end
-
 		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory)))
 	end
 
@@ -67,7 +64,7 @@ defmodule PlexOrganizer do
 				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
 
 				#send message to manager to create a child process for a single file
-			  send(:FileManager, {:create, {self(), file_register_name}})
+			  send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
 			  :time.sleep(1000)
 
 				#send message to manager to clean file
@@ -80,7 +77,7 @@ defmodule PlexOrganizer do
 				#GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file	
 
 			  #send message to manager to create a child process for a single file
-			  send(:FileManager, {:create, {self(), file_register_name}})
+			  send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
 			  :timer.sleep(1000)
 				
 			  #send message to manager to process file
