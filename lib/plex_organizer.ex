@@ -37,10 +37,10 @@ defmodule PlexOrganizer do
 		file_list = File.ls!(Path.absname(src_directory))
 
 		if(file_list != []) do
-			#spawn parent process for managing files to copy
+			#spawn and register parent process for managing files to copy
 			Process.register(spawn(FileManager, :manage, [0]), :FileManager)
 		end
-		
+
 		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory)))
 	end
 
@@ -53,38 +53,41 @@ defmodule PlexOrganizer do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
 
-			#IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")}")
+			#IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, ""#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")
 			#file_or_folder returns the file to be copied
+
+		  src_file_path  = "#{src}/#{file_or_folder(src, file)}"
+      dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}"
+			trash_path     = "/Users/dmccray/.Trash"
+
+			#encoding (md5) file name to register process
+			file_register_name = "FO_#{:crypto.hash(:md5, file) |> Base.encode16}"
 			
 			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
-				IO.puts("#{show} - #{seas_epi_tag} exists. Moving #{src}/#{file} to trash.") #log move to Trash
-				#recycle(src, file)	#move source to recycle bin
+				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
+
+				#send message to manager to create a child process for a single file
+			  send(:FileManager, {:create, {self(), file_register_name}})
+			  :time.sleep(1000)
+
+				#send message to manager to clean file
+				send(:FileManager, {:clean, {self(), file_register_name, src_file_path, trash_path}})
+				
 			else
+				#IO.puts("[File Does not Exist - Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
+				
 				##{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
 				#GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file	
 
-				#encoding file name to register process
-				file_register_name = "FO_#{:crypto.hash(:md5, file) |> Base.encode16}"
-				
 			  #send message to manager to create a child process for a single file
 			  send(:FileManager, {:create, {self(), file_register_name}})
-
 			  :timer.sleep(1000)
 				
 			  #send message to manager to process file
-			  send(:FileManager, {:process,
-				  								 {self(),
-					  								file_register_name,
-						  							"#{src}/#{file}",
-							  						"#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}",
-								  					"/Users/dmccray/.Trash"
-									  			 }})
+			  send(:FileManager, {:process, {self(), file_register_name, src_file_path, dest_file_path, trash_path}})
 				
-				#IO.puts("Copy of #{show_folder}/#{season}/#{show} - #{seas_epi_tag} Verified.")												#log verification of copy
-				#move source to recycle bin
 			end
 		end
-
 	end
 
 	defp series?(src_path) do
@@ -126,7 +129,7 @@ defmodule PlexOrganizer do
 									end
 								end
 							)
-			elem(file_to_copy, 0)
+			file <> "/" <> elem(file_to_copy, 0)
 		else
 			file
 		end
