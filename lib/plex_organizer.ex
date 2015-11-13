@@ -35,6 +35,12 @@ defmodule PlexOrganizer do
 	defp match_content(:series, src_directory, dest_directory, show) do
 		show_regex = define_regex(show)
 		file_list = File.ls!(Path.absname(src_directory))
+
+		if(file_list != []) do
+			#spawn parent process for managing files to copy
+			Process.register(spawn(FileManager, :manage, [0]), :FileManager)
+		end
+		
 		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory)))
 	end
 
@@ -49,24 +55,30 @@ defmodule PlexOrganizer do
 
 			#IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")}")
 			#file_or_folder returns the file to be copied
-
-			#to help learn about process I should implement a "master" process that will spawn processes for each file to copy
-			#each spawned copy process will pass a message back to the "master" process once it has completed successfully
-			#the "master" process will then spawn a process to clean or mv the orginal file to the Recycle bin
+			
 			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
 				IO.puts("#{show} - #{seas_epi_tag} exists. Moving #{src}/#{file} to trash.") #log move to Trash
 				#recycle(src, file)	#move source to recycle bin
 			else
-				#copy source to destination
-				#IO.puts("Copying #{src}/#{file_or_folder(src, file)} to #{show_folder}/#{season}/#{show} - #{seas_epi_tag}") 				#log copy to destination
-				#verify copy
-				{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
-				:timer.sleep(3000)
-				GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file
+				##{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
+				#GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file	
+			
+			  #send message to manager to create a child process for a single file
+			  send(:FileManager, {:create, {self(), file}})
+
+			  :timer.sleep(1000)
+				
+			  #send message to manager to process file
+			  send(:FileManager, {:process,
+				  								 {self(),
+					  								file,
+						  							"#{src}/#{file}",
+							  						"#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}",
+								  					"/Users/dmccray/.Trash"
+									  			 }})
 				
 				#IO.puts("Copy of #{show_folder}/#{season}/#{show} - #{seas_epi_tag} Verified.")												#log verification of copy
 				#move source to recycle bin
-				IO.puts("#{show} - #{seas_epi_tag} copied. Moving #{src}/#{file} to trash.") 												#log move to Trash#log move to trash
 			end
 		end
 
@@ -139,11 +151,6 @@ defmodule PlexOrganizer do
 			|> add_parens											#add parenthesis around regular expression
 			|> Regex.compile										#create regular expression from string
 			|> elem(1)												#get the regex from the tuple
-	end
-
-	defp recycle(src_path, src_file_or_folder) do
-		trash_file = "/Users/dmccray/.Trash/#{src_file_or_folder}"
-		File.rename(Path.absname(src_path <> "/" <> src_file_or_folder), Path.absname(trash_file))
 	end
 
 	defp copy_file(src_path, src_file) do
