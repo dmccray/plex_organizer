@@ -64,7 +64,7 @@ defmodule PlexOrganizer do
 				#GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file	
 
 				#encoding file name to register process
-				file_register_name = :crypto.hash(:md5, file) |> Base.encode16
+				file_register_name = "FO_#{:crypto.hash(:md5, file) |> Base.encode16}"
 				
 			  #send message to manager to create a child process for a single file
 			  send(:FileManager, {:create, {self(), file_register_name}})
