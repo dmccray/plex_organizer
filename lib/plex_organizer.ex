@@ -65,7 +65,7 @@ defmodule PlexOrganizer do
 
 				#send message to manager to create a child process for a single file
 			  send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
-			  :time.sleep(1000)
+			  :timer.sleep(1000)
 
 				#send message to manager to clean file
 				send(:FileManager, {:clean, {self(), file_register_name, src_file_path, trash_path}})
