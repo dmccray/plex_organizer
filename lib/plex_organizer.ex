@@ -1,5 +1,5 @@
 defmodule PlexOrganizer do
-	def main() do
+	def main(args) do
 		#spawn and register parent process for managing files to copy
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
 
