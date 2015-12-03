@@ -2,13 +2,16 @@ defmodule PlexOrganizer do
 	def main(args) do
 		#spawn and register parent process for managing files to copy
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
-				
-		args |> parse_args |> process
+
+		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
+		
+		#args |> parse_args |> process
 	end
 
 	def process([]) do
 		#No Arguments
-		build_file_list(System.cwd(), System.cwd())
+		#build_file_list(System.cwd(), System.cwd())
+		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
 	end
 
 	def process(options) do
