@@ -26,7 +26,7 @@ defmodule FileManager do
 			{:done, {from, file_hash}} ->
 				#kill process
 				Process.exit(from, :kill)
-				IO.puts("Killing process: #{file_hash}")
+				IO.puts("Killing process: #{from} - #{file_hash}")
 				manage(process_count - 1)
 		end
 	end
