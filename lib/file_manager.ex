@@ -11,9 +11,9 @@ defmodule FileManager do
 		
 			{:process, {from, file_hash, file_orig, file_new, trash}} ->
 				if(Process.whereis(String.to_atom(file_hash)) != nil) do
-					send(String.to_atom(file_hash), {:copy, {self(), file_orig, file_new}})       #copy
-					send(String.to_atom(file_hash), {:verify, {self(), file_orig, file_new}})     #verify
-					send(String.to_atom(file_hash), {:clean, {self(), file_orig, trash}})         #cleanup
+					send(String.to_atom(file_hash), {:copy, {self(), file_orig, file_new}})                  #copy
+					send(String.to_atom(file_hash), {:verify, {self(), file_orig, file_new}})                #verify
+					send(String.to_atom(file_hash), {:clean, {self(), file_hash, file_orig, trash}})         #cleanup
 				end
 				manage(process_count)
 
