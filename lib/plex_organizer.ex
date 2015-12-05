@@ -4,6 +4,8 @@ defmodule PlexOrganizer do
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
 
 		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
+
+		Logger.info "test"
 		
 		#args |> parse_args |> process
 	end
