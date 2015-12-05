@@ -18,7 +18,14 @@ use Mix.Config
 #
 # Or configure a 3rd-party app:
 #
-#     config :logger, level: :info
+
+config :logger,
+  backends: [{LoggerFileBackend, :info_log}]
+
+config :logger, :info_log,
+	path: "/var/log/plex_organizer/info.log"
+	level: :info
+
 #
 
 # It is also possible to import configuration files, relative to this
