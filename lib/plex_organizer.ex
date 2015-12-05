@@ -1,3 +1,5 @@
+require Logger
+
 defmodule PlexOrganizer do
 	def main(args) do
 		#spawn and register parent process for managing files to copy
