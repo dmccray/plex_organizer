@@ -23,7 +23,7 @@ config :logger,
   backends: [{LoggerFileBackend, :info_log}]
 
 config :logger, :info_log,
-	path: "/var/log/plex_organizer/info.log"
+	path: "/var/log/plex_organizer/info.log",
 	level: :info
 
 #
