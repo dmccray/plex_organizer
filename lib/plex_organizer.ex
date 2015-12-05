@@ -3,9 +3,9 @@ defmodule PlexOrganizer do
 		#spawn and register parent process for managing files to copy
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
 
-		#build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
+		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
 		
-		args |> parse_args |> process
+		#args |> parse_args |> process
 	end
 
 	def process([]) do
@@ -100,7 +100,7 @@ defmodule PlexOrganizer do
 
 	defp get_season_episode(:series, file) do
 		[se_tag | tl] = Regex.run(~r/S\d\dE\d\d/i, file)
-		[hd | tl] = String.split(String.upcase(se_tag), ["S","E"])
+		[hd | tl] = String.split(se_tag, ["S","E"])
 		[car | [caar| cdr]] = tl
 
 		{"Season #{String.lstrip(car,?0)}","Episode #{String.lstrip(caar,?0)}", se_tag}
