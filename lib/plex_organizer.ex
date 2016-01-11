@@ -1,4 +1,4 @@
-require Logger
+require Lager
 
 defmodule PlexOrganizer do
 	def main(args) do
@@ -7,7 +7,7 @@ defmodule PlexOrganizer do
 
 		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
 
-		Logger.info "test"
+		Lager.info "Testing Logging"
 		
 		#args |> parse_args |> process
 	end
@@ -60,8 +60,8 @@ defmodule PlexOrganizer do
 			#IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, ""#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")
 			#file_or_folder returns the file to be copied
 
-		  src_file_path  = "#{src}/#{file_or_folder(src, file)}"
-      dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}"
+		  	src_file_path  = "#{src}/#{file_or_folder(src, file)}"
+      		dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}"
 			trash_path     = "/Users/dmccray/.Trash"
 
 			#encoding (md5) file name to register process
@@ -71,8 +71,8 @@ defmodule PlexOrganizer do
 				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
 
 				#send message to manager to create a child process for a single file
-			  send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
-			  :timer.sleep(1000)
+			  	send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
+			  	:timer.sleep(1000)
 
 				#send message to manager to clean file
 				send(:FileManager, {:clean, {self(), file_register_name, src_file_path, trash_path}})
@@ -83,12 +83,12 @@ defmodule PlexOrganizer do
 				##{:ok, pid} = FileCopyServer.start_link(file)           #starting new OTP process
 				#GenServer.call(pid, {file, src, dest})     #Synchronous call to copy file	
 
-			  #send message to manager to create a child process for a single file
-			  send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
-			  :timer.sleep(1000)
+			  	#send message to manager to create a child process for a single file
+			  	send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
+			  	:timer.sleep(1000)
 				
-			  #send message to manager to process file
-			  send(:FileManager, {:process, {self(), file_register_name, src_file_path, dest_file_path, trash_path}})
+			  	#send message to manager to process file
+			  	send(:FileManager, {:process, {self(), file_register_name, src_file_path, dest_file_path, trash_path}})
 				
 			end
 		end

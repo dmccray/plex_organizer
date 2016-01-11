@@ -1,4 +1,6 @@
 defmodule FileOperation do
+	require Lager
+
 	def operation(file, opp_count) do
 		#trash_file = "/Users/dmccray/.Trash/file"
 
