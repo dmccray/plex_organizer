@@ -23,14 +23,17 @@ defmodule FileOperation do
 	end
 
 	defp copy(file_orig, file_new) do
-		IO.puts("Copying: #{file_orig} To: #{file_new}")
+		Lager.info("Copying: #{file_orig} To: #{file_new}")
+		#IO.puts("Copying: #{file_orig} To: #{file_new}")
 	end
 
 	defp verify(file_orig, file_new) do
-		IO.puts("Verifying #{file_orig} and #{file_new}")
+		Lager.info("Verifying #{file_orig} and #{file_new}")
+		#IO.puts("Verifying #{file_orig} and #{file_new}")
 	end
 
 	defp clean(file_orig, trash) do
-		IO.puts("Moving #{file_orig} to #{trash}")
+		Lager.info("Moving #{file_orig} to #{trash}")
+		#IO.puts("Moving #{file_orig} to #{trash}")
 	end
 end
