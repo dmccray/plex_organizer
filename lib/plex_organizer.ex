@@ -53,7 +53,7 @@ defmodule PlexOrganizer do
 	end
 
 	defp match_show(file, show, regex, src, dest) do
-		if String.match?(String.upcase(file),regex) do
+		if String.match?(String.replace(String.upcase(file), ~r/{\S*}/i, ""), regex) do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
 
@@ -67,6 +67,7 @@ defmodule PlexOrganizer do
 			#encoding (md5) file name to register process
 			file_register_name = "FO_#{:crypto.hash(:md5, file) |> Base.encode16}"
 			
+			Lager.info("********** File: #{file} Show: #{show} Season: #{season} SETag: #{seas_epi_tag}")
 			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
 				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
 
@@ -104,7 +105,7 @@ defmodule PlexOrganizer do
 
 	defp get_season_episode(:series, file) do
 		[se_tag | tl] = Regex.run(~r/S\d\dE\d\d/i, file)
-		[hd | tl] = String.split(se_tag, ["S","E"])
+		[hd | tl] = String.split(se_tag, ["S","E","s","e"])
 		[car | [caar| cdr]] = tl
 
 		{"Season #{String.lstrip(car,?0)}","Episode #{String.lstrip(caar,?0)}", se_tag}
@@ -155,6 +156,7 @@ defmodule PlexOrganizer do
 
 	defp define_regex(str) do
 		String.upcase(str)											#make string uppercase to match uppercase filename
+			#|> String.replace(~r/{\S*}/i, "")						#removing any text between {} (matched {SPARROW} to Arrow show)
 			|> String.replace(~r/\(\d\d\d\d\)/, "(\\d\\d\\d\\d)?")	#remove year
 			|> String.strip											#strip whitespace
 			|> String.replace(" ", "(\\s|\\S)*")   					#add regular expressions
