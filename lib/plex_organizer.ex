@@ -1,58 +1,59 @@
-require Lager
+require Lager 					#logging module
 
 defmodule PlexOrganizer do
+	Lager.compile_log_level(:debug)
+
 	def main(args) do
 		#spawn and register parent process for managing files to copy
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
+		Lager.info("Starting File Manager...")
 
-		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
-
-		Lager.info "Testing Logging"
+		#build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media", "/Users/dmccray/.Trash")
 		
-		#args |> parse_args |> process
+		args |> parse_args |> process
 	end
 
-	def process([]) do
-		#No Arguments
-		#build_file_list(System.cwd(), System.cwd())
-		build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media")
-	end
+	# def process([]) do
+	# 	#No Arguments
+	# 	#build_file_list(System.cwd(), System.cwd())
+	# 	build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media", "/Users/dmccray/.Trash")
+	# end
 
 	def process(options) do
 		#Arguments
-		build_file_list(options[:source], options[:destination])
+		build_file_list(options[:source], options[:destination], options[:trash])
 	end
 
-	def build_file_list(src_directory, dest_directory) do
+	def build_file_list(src_directory, dest_directory, trash_directory) do
 		#File.cd!("/User/Dee/workspace")
 		#files = File.ls!(Path.absname(src_directory, dest_directory))
 		#Enum.each(files, &(PlexNameTransform.match_series(&1)))
 
 		File.ls!(Path.absname(dest_directory) <> "/TV Shows") 
 		|> 	Stream.filter(&(not String.starts_with?(&1, ".")))  #filter out hidden files
-		|> 	Enum.each(&(match_content(:series, src_directory, dest_directory, &1)))
+		|> 	Enum.each(&(match_content(:series, src_directory, dest_directory, trash_directory, &1)))
 
 	end
 
 	defp parse_args(args) do
 		{options, _, _} = OptionParser.parse(args,
-			switches: [source: :string, destination: :string]
+			switches: [source: :string, destination: :string, trash: :string]
 		)
 
 		options
 	end
 
-	defp match_content(:series, src_directory, dest_directory, show) do
+	defp match_content(:series, src_directory, dest_directory, trash_directory, show) do
 		show_regex = define_regex(show)
 		file_list = File.ls!(Path.absname(src_directory))
-		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory)))
+		Enum.each(file_list, &(match_show(&1, show, show_regex, src_directory, dest_directory, trash_directory)))
 	end
 
 	defp match_content(:movie, src_directory, dest_directory, show) do
 		#tab to start automating movies
 	end
 
-	defp match_show(file, show, regex, src, dest) do
+	defp match_show(file, show, regex, src, dest, trash) do
 		if String.match?(String.replace(String.upcase(file), ~r/{\S*}/i, ""), regex) do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
@@ -61,13 +62,13 @@ defmodule PlexOrganizer do
 			#file_or_folder returns the file to be copied
 
 		  	src_file_path  = "#{src}/#{file_or_folder(src, file)}"
-      		dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}"
-			trash_path     = "/Users/dmccray/.Trash"
+      		dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
+			trash_path     = "#{trash}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
 
 			#encoding (md5) file name to register process
 			file_register_name = "FO_#{:crypto.hash(:md5, file) |> Base.encode16}"
 			
-			Lager.info("********** File: #{file} Show: #{show} Season: #{season} SETag: #{seas_epi_tag}")
+			Lager.debug("********** File: #{file} Show: #{show} Season: #{season} SETag: #{seas_epi_tag}")
 			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
 				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
 
@@ -163,13 +164,6 @@ defmodule PlexOrganizer do
 			|> add_parens											#add parenthesis around regular expression
 			|> Regex.compile										#create regular expression from string
 			|> elem(1)												#get the regex from the tuple
-	end
-
-	defp copy_file(src_path, src_file) do
-	end
-
-	#return true or false after copy
-	defp verify_copy(src_path, src_file) do
 	end
 
 	defp add_parens(str) do
