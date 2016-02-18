@@ -8,8 +8,6 @@ defmodule PlexOrganizer do
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
 		Lager.info("Starting File Manager...")
 
-		#build_file_list("/Volumes/FreeAgent/torrent_complete", "/Volumes/Icy Dock/Plex/Media", "/Users/dmccray/.Trash")
-		
 		args |> parse_args |> process
 	end
 
@@ -20,8 +18,7 @@ defmodule PlexOrganizer do
 	# end
 
 	def process(options) do
-		#Arguments
-		build_file_list(options[:source], options[:destination], options[:trash])
+		build_file_list(options[:source], options[:destination], options[:trash]) 			#Arguments
 	end
 
 	def build_file_list(src_directory, dest_directory, trash_directory) do
@@ -50,11 +47,11 @@ defmodule PlexOrganizer do
 	end
 
 	defp match_content(:movie, src_directory, dest_directory, show) do
-		#tab to start automating movies
+             #tab to start automating movies
 	end
 
 	defp match_show(file, show, regex, src, dest, trash) do
-		if String.match?(String.replace(String.upcase(file), ~r/{\S*}/i, ""), regex) do
+		if String.match?(String.replace(String.upcase(file), ~r/{\S*}/i, ""), regex) && series?(file) do
 			{season, episode, seas_epi_tag} = get_season_episode(:series, file)
 			show_folder = find_destination(:series, dest, show, season)
 
