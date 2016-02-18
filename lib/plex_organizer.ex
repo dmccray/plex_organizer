@@ -1,12 +1,12 @@
-require Lager 					#logging module
+#require Lager 					#logging module
 
 defmodule PlexOrganizer do
-	Lager.compile_log_level(:debug)
+	##Lager.compile_log_level(:debug)
 
 	def main(args) do
 		#spawn and register parent process for managing files to copy
 		Process.register(spawn(FileManager, :manage, [0]), :FileManager)
-		Lager.info("Starting File Manager...")
+		#Lager.info("Starting File Manager...")
 
 		args |> parse_args |> process
 	end
@@ -65,7 +65,7 @@ defmodule PlexOrganizer do
 			#encoding (md5) file name to register process
 			file_register_name = "FO_#{:crypto.hash(:md5, file) |> Base.encode16}"
 			
-			Lager.debug("********** File: #{file} Show: #{show} Season: #{season} SETag: #{seas_epi_tag}")
+			#Lager.debug("********** File: #{file} Show: #{show} Season: #{season} SETag: #{seas_epi_tag}")
 			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
 				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
 
