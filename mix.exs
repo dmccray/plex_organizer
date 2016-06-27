@@ -16,8 +16,6 @@ defmodule PlexOrganizer.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [
-      applications: [:lager],
-      erl_opts: [parse_transform: "lager_transform"]
     ]
   end
 
@@ -32,7 +30,7 @@ defmodule PlexOrganizer.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:lager, github: "basho/lager"}
+
     ]
   end
 end

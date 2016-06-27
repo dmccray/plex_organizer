@@ -1,13 +1,13 @@
 defmodule FileManager do
-	require Lager
-
+	require Logger
+	
 	def manage(process_count) do
 		receive do
 			{:create, {from, file, file_hash}} ->
 				if (Process.whereis(String.to_atom(file_hash)) == nil) do
 					#spawn process and register its name as the file name the process will manage
 					Process.register(spawn(FileOperation, :operation, [file, 1]), String.to_atom(file_hash))
-					Lager.info("Creating Process: #{file_hash}")
+					Logger.info("Creating Process: #{file_hash}")
 					#IO.puts("Creating process: #{file_hash}")
 				end
 				manage(process_count + 1)
@@ -29,7 +29,7 @@ defmodule FileManager do
 			{:done, {from, file_hash}} ->
 				#kill process
 				Process.exit(from, :kill)
-				Lager.info("Killing Process: #{file_hash}")
+				Logger.info("Killing Process: #{file_hash}")
 				manage(process_count - 1)
 		end
 	end
