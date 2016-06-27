@@ -29,7 +29,7 @@ defmodule PlexOrganizer.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      [{:logger_file_backend, git: "git://github.com/onkel-dirtus/logger_file_backend.git"}]
+      {:logger_file_backend, ">= 0.0.1"}
     ]
   end
 end
