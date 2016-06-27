@@ -58,8 +58,8 @@ defmodule PlexOrganizer do
 			#IO.puts("Destination: #{dest}/TV Shows/#{show}/#{season} Show: #{show} - #{seas_epi_tag} Exists?: #{exists?(:series, ""#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}")
 			#file_or_folder returns the file to be copied
 
-		  	src_file_path  = "#{src}/#{file_or_folder(src, file)}"
-      		dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
+		 	src_file_path  = "#{src}/#{file_or_folder(src, file)}"
+     	dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
 			trash_path     = "#{trash}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
 
 			#encoding (md5) file name to register process
@@ -102,7 +102,7 @@ defmodule PlexOrganizer do
 	end
 
 	defp get_season_episode(:series, file) do
-		[se_tag | tl] = Regex.run(~r/S\d\dE\d\d/i, file)
+		[se_tag | tl] = Regex.run(~r/[Ss]\d\d[Ee]\d\d/i, file)
 		[hd | tl] = String.split(se_tag, ["S","E","s","e"])
 		[car | [caar| cdr]] = tl
 
@@ -153,14 +153,14 @@ defmodule PlexOrganizer do
 	end
 
 	defp define_regex(str) do
-		String.upcase(str)											#make string uppercase to match uppercase filename
-			#|> String.replace(~r/{\S*}/i, "")						#removing any text between {} (matched {SPARROW} to Arrow show)
-			|> String.replace(~r/\(\d\d\d\d\)/, "(\\d\\d\\d\\d)?")	#remove year
-			|> String.strip											#strip whitespace
-			|> String.replace(" ", "(\\s|\\S)*")   					#add regular expressions
-			|> add_parens											#add parenthesis around regular expression
-			|> Regex.compile										#create regular expression from string
-			|> elem(1)												#get the regex from the tuple
+		String.upcase(str)											                      #make string uppercase to match uppercase filename
+			#|> String.replace(~r/{\S*}/i, "")						              #removing any text between {} (matched {SPARROW} to Arrow show)
+			|> String.replace(~r/\(\d\d\d\d\)/, "(\\d\\d\\d\\d)?")	    #remove year
+			|> String.strip											                        #strip whitespace
+			|> String.replace(" ", "(\\s|\\S)*")   					            #add regular expressions
+			|> add_parens											                          #add parenthesis around regular expression
+			|> Regex.compile										                        #create regular expression from string
+			|> elem(1)												                          #get the regex from the tuple
 	end
 
 	defp add_parens(str) do
