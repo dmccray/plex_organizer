@@ -1,0 +1,25 @@
+2016-05-11 23:58:05.502 [info] <0.7.0> Application lager started on node nonode@nohost
+2016-05-11 23:58:05.502 [info] <0.7.0> Application exlager started on node nonode@nohost
+2016-05-11 23:58:05.502 [info] <0.7.0> Application plex_organizer started on node nonode@nohost
+2016-05-12 22:16:03.503 [info] <0.7.0> Application lager started on node nonode@nohost
+2016-05-12 22:16:03.503 [info] <0.7.0> Application exlager started on node nonode@nohost
+2016-05-12 22:16:03.503 [info] <0.7.0> Application plex_organizer started on node nonode@nohost
+2016-05-12 22:16:03.506 [info] <0.72.0>@Elixir.PlexOrganizer:main:9 Starting File Manager...
+2016-05-12 22:16:03.556 [info] <0.73.0>@Elixir.FileManager:manage:10 Creating Process: FO_59CB7E0871ACEB9EF3C6B9DE5FC95163
+2016-05-12 22:16:04.556 [info] <0.75.0>@Elixir.FileOperation:copy:23 Copying: /dock/torrent_complete/New.Girl.S05E21.720p.hdtv.hevc.x265.rmteam.mkv To: /isis/Plex/Media/TV Shows/New Girl/Season 5/New Girl - S05E21.mkv
+2016-05-12 22:16:04.674 [info] <0.75.0>@Elixir.FileOperation:clean:34 Moving /dock/torrent_complete/New.Girl.S05E21.720p.hdtv.hevc.x265.rmteam.mkv To /home/dee/.local/share/Trash/files/New Girl - S05E21.mkv
+2016-05-12 22:16:04.763 [warning] <0.75.0>@Elixir.FileOperation:clean:41 Removing File: /dock/torrent_complete/New.Girl.S05E21.720p.hdtv.hevc.x265.rmteam.mkv
+2016-05-12 22:16:04.780 [info] <0.73.0>@Elixir.FileManager:manage:32 Killing Process: FO_59CB7E0871ACEB9EF3C6B9DE5FC95163
+2016-06-27 03:13:51.339 [info] <0.31.0> Application lager started on node nonode@nohost
+2016-06-27 03:13:51.339 [info] <0.31.0> Application exlager started on node nonode@nohost
+2016-06-27 03:13:51.339 [info] <0.31.0> Application plex_organizer started on node nonode@nohost
+2016-06-27 03:13:51.342 [info] <0.95.0>@Elixir.PlexOrganizer:main:9 Starting File Manager...
+2016-06-27 09:56:48.479 [info] <0.31.0> Application lager started on node nonode@nohost
+2016-06-27 09:56:48.479 [info] <0.31.0> Application exlager started on node nonode@nohost
+2016-06-27 09:56:48.479 [info] <0.31.0> Application plex_organizer started on node nonode@nohost
+2016-06-27 09:56:48.482 [info] <0.95.0>@Elixir.PlexOrganizer:main:9 Starting File Manager...
+2016-06-27 09:56:48.552 [info] <0.96.0>@Elixir.FileManager:manage:10 Creating Process: FO_CAC58F9859AFD78883E4A118486A30A3
+2016-06-27 09:56:49.552 [info] <0.98.0>@Elixir.FileOperation:copy:23 Copying: /dock/torrent_complete/Preacher.S01E05.1080p.WEB-DL.HEVC.DD5.1.x265.mkv To: /isis/Plex/Media/TV Shows/Preacher/Season 1/Preacher - S01E05.mkv
+2016-06-27 09:56:50.122 [info] <0.98.0>@Elixir.FileOperation:clean:34 Moving /dock/torrent_complete/Preacher.S01E05.1080p.WEB-DL.HEVC.DD5.1.x265.mkv To /home/dee/.local/share/Trash/files/Preacher - S01E05.mkv
+2016-06-27 09:56:50.881 [warning] <0.98.0>@Elixir.FileOperation:clean:41 Removing File: /dock/torrent_complete/Preacher.S01E05.1080p.WEB-DL.HEVC.DD5.1.x265.mkv
+2016-06-27 09:56:50.949 [info] <0.96.0>@Elixir.FileManager:manage:32 Killing Process: FO_CAC58F9859AFD78883E4A118486A30A3

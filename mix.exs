@@ -15,7 +15,10 @@ defmodule PlexOrganizer.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:exlager]]
+    [
+      applications: [:lager],
+      erl_opts: [parse_transform: "lager_transform"]
+    ]
   end
 
   # Dependencies can be Hex packages:
@@ -29,7 +32,7 @@ defmodule PlexOrganizer.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:exlager, github: "khia/exlager"}
+      {:lager, github: "basho/lager"}
     ]
   end
 end
