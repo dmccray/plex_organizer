@@ -1,5 +1,5 @@
 defmodule FileOperation do
-	#require Lager
+	require Lager
 
 	def operation(file, opp_count) do
 		receive do
@@ -20,25 +20,25 @@ defmodule FileOperation do
 	end
 
 	defp copy(file_orig, file_new) do
-		#Lager.info("Copying: #{file_orig} To: #{file_new}")
+		Lager.info("Copying: #{file_orig} To: #{file_new}")
 		File.copy!(file_orig, file_new)						#copy to new destination
 	end
 
 	#not using
 	defp verify(file_orig, file_new) do
-		##Lager.info("Verifying #{file_orig} and #{file_new}")
+		Lager.info("Verifying #{file_orig} and #{file_new}")
 		#IO.puts "***** Verified: #{gen_md5(file_orig) == gen_md5(file_new)}: #{gen_md5(file_orig)}  #{gen_md5(file_new)} ******"
 	end
 
 	defp clean(file_orig, trash) do
-		#Lager.info("Moving #{file_orig} To #{trash}")
+		Lager.info("Moving #{file_orig} To #{trash}")
 		File.copy!(file_orig, trash)							#copy to trash
 
-		if(Path.dirname(file_orig) != "/Volumes/FreeAgent/torrent_complete") do
-			#Lager.warning("Removing Directory: #{Path.dirname(file_orig)}")
+		if(Path.dirname(file_orig) != "/dock/torrent_complete") do
+			Lager.warning("Removing Directory: #{Path.dirname(file_orig)}")
 			File.rm_rf!(Path.dirname(file_orig))				#delete directory if not at torrent_complete
 		else
-			#Lager.warning("Removing File: #{file_orig}")
+			Lager.warning("Removing File: #{file_orig}")
 			File.rm_rf!(file_orig)									#otherwise just delete file
 		end
 	end
