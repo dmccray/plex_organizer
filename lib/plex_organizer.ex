@@ -1,5 +1,5 @@
 defmodule PlexOrganizer do
-	require Logger
+	require Logger	
 
 	def main(args) do
 		#spawn and register parent process for managing files to copy

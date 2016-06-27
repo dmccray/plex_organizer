@@ -1,3 +1,4 @@
 %{"exlager": {:git, "https://github.com/khia/exlager.git", "abb13435a540731b8b9c5f649f4d94f11a27c1f7", []},
   "goldrush": {:git, "git://github.com/DeadZen/goldrush.git", "64864ba7fcf40988361340e48680b49a2c2938cf", [tag: "0.1.7"]},
-  "lager": {:git, "https://github.com/basho/lager.git", "310ed140ab86b95dd9f1f1ed3bf2ca93f841349d", []}}
+  "lager": {:git, "https://github.com/basho/lager.git", "310ed140ab86b95dd9f1f1ed3bf2ca93f841349d", []},
+  "logger_file_backend": {:hex, :logger_file_backend, "0.0.8", "1cdf1c492d6f64ee5d76d423cd76e2282ae3a7800468cb8b305bdfd1e775c07b", [:mix], []}}

@@ -19,14 +19,18 @@ use Mix.Config
 # Or configure a 3rd-party app:
 #
 
+# config :logger,
+# 	backends: [:console],
+# 	level: :info
+# 	#compile_time_purge_level: :info
+
 config :logger,
   backends: [{LoggerFileBackend, :info_log}]
-
+  
 config :logger, :info_log,
-	path: "/home/dee/workspace/plex_organizer/log",
+	path: "/home/dee/workspace/plex_organizer/log/plex_organizer.log",
 	level: :info
 
-#
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
