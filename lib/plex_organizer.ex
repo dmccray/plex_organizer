@@ -92,7 +92,7 @@ defmodule PlexOrganizer do
 	end
 
 	defp series?(src_path) do
-		Regex.run(~r/S\d\dE\d\d/, src_path) != nil
+		Regex.run(~r/[Ss]\d\d[Ee]\d\d/, src_path) != nil
 	end
 
 	defp movie?(src_path) do
