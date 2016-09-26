@@ -141,7 +141,7 @@ defmodule PlexOrganizer do
 		episode_regex = define_regex(episode)
 
 		#create the directory. if already exists new_dir will contain a tuple with the error. {:error, :eexist}
-		new_dir = File.mkdir(File.absname(path))	
+		new_dir = File.mkdir(Path.absname(path))	
 		file_exists = List.foldl(File.ls!(Path.absname(path)), :false,
 							fn(chk_file, found) ->
 								if (String.match?(String.upcase(chk_file), episode_regex)) do
