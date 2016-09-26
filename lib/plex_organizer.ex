@@ -57,7 +57,7 @@ defmodule PlexOrganizer do
 			#file_or_folder returns the file to be copied
 
 		 	src_file_path  = "#{src}/#{file_or_folder(src, file)}"
-     	dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
+     		dest_file_path = "#{dest}/TV Shows/#{show}/#{season}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
 			trash_path     = "#{trash}/#{show} - #{seas_epi_tag}#{Path.extname(src_file_path)}"
 
 			#encoding (md5) file name to register process
@@ -139,6 +139,9 @@ defmodule PlexOrganizer do
 	#tests that the file doesn't already exist in location
 	defp exists?(:series, path, episode) do
 		episode_regex = define_regex(episode)
+
+		#create the directory. if already exists new_dir will contain a tuple with the error. {:error, :eexist}
+		new_dir = File.mkdir(File.absname(path))	
 		file_exists = List.foldl(File.ls!(Path.absname(path)), :false,
 							fn(chk_file, found) ->
 								if (String.match?(String.upcase(chk_file), episode_regex)) do

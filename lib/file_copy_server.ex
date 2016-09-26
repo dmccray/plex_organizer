@@ -36,5 +36,3 @@ defmodule FileCopyServer do
 	end
 		
 end
-
-	
