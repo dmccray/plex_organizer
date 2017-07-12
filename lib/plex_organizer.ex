@@ -67,6 +67,9 @@ defmodule PlexOrganizer do
 			if exists?(:series, "#{dest}/TV Shows/#{show}/#{season}", "#{show} - #{seas_epi_tag}") do
 				#IO.puts("[File Exists - Cleanup Process] Source: #{src_file_path} Destination: #{dest_file_path} Trash: #{trash_path}")
 
+				#This would be the place where if the file does exist it is likely the new version is better
+				#quality perhaps we could overrite the old one?
+
 				#send message to manager to create a child process for a single file
 			  send(:FileManager, {:create, {self(), src_file_path, file_register_name}})
 			  :timer.sleep(1000)
